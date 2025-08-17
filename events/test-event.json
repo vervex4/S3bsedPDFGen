@@ -1,0 +1,8 @@
+{
+  "httpMethod": "POST",
+  "path": "/generate-pdf",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"htmlContent\":\"PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KICAgIDx0aXRsZT5TYW1wbGUgUERGPC90aXRsZT4KICAgIDxzdHlsZT4KICAgICAgICBib2R5IHsgZm9udC1mYW1pbHk6IEFyaWFsLCBzYW5zLXNlcmlmOyBtYXJnaW46IDIwcHg7IH0KICAgICAgICBoMSB7IGNvbG9yOiAjMzMzOyB9CiAgICA8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPkhlbGxvIFdvcmxkITwvaDE+CiAgICA8cD5UaGlzIGlzIGEgc2FtcGxlIFBERiBnZW5lcmF0ZWQgZnJvbSBIVE1MLjwvcD4KPC9ib2R5Pgo8L2h0bWw+\",\"fileName\":\"test-document.pdf\",\"options\":{\"format\":\"A4\",\"printBackground\":true}}"
+} 

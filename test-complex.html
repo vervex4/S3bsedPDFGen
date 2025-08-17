@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complex PDF Test</title>
+    <style>
+      @page {
+        margin: 1.5cm;
+        size: A4;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 2.5em;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .content {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+      }
+
+      .highlight {
+        background: linear-gradient(45deg, #ff6b6b, #feca57);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin: 20px 0;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .data-table th {
+        background: #007bff;
+        color: white;
+        padding: 12px;
+        text-align: left;
+      }
+
+      .data-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .data-table tr:nth-child(even) {
+        background: #f8f9fa;
+      }
+
+      .chart {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+      }
+
+      .progress-bar {
+        background: #e9ecef;
+        border-radius: 10px;
+        height: 20px;
+        margin: 10px 0;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #28a745, #20c997);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+      }
+
+      .footer {
+        margin-top: 50px;
+        padding: 20px;
+        background: #343a40;
+        color: white;
+        text-align: center;
+        border-radius: 8px;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        font-weight: bold;
+      }
+
+      .status-success {
+        background: #28a745;
+        color: white;
+      }
+
+      .status-warning {
+        background: #ffc107;
+        color: #212529;
+      }
+
+      .status-error {
+        background: #dc3545;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>📊 Advanced PDF Generation Test</h1>
+      <p>Testing complex HTML with styling, tables, and dynamic content</p>
+    </div>
+
+    <div class="content">
+      <div class="section">
+        <h2>🎯 Performance Metrics</h2>
+        <p>
+          This document demonstrates advanced PDF generation capabilities
+          including:
+        </p>
+
+        <div class="highlight">
+          <h3>✅ Successfully Generated Features:</h3>
+          <ul>
+            <li>Complex CSS styling with gradients and shadows</li>
+            <li>Responsive table layouts</li>
+            <li>Custom fonts and typography</li>
+            <li>Background colors and borders</li>
+            <li>Dynamic content generation</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>📈 Data Visualization</h2>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Status</th>
+                <th>Progress</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PDF Generation Speed</td>
+                <td>2.3 seconds</td>
+                <td>
+                  <span class="status-badge status-success">Excellent</span>
+                </td>
+                <td>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 95%"></div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>File Size Optimization</td>
+                <td>25.6 KB</td>
+                <td>
+                  <span class="status-badge status-success">Optimal</span>
+                </td>
+                <td>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 88%"></div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>CSS Rendering</td>
+                <td>100% Accurate</td>
+                <td>
+                  <span class="status-badge status-success">Perfect</span>
+                </td>
+                <td>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>S3 Upload Speed</td>
+                <td>1.2 seconds</td>
+                <td><span class="status-badge status-warning">Good</span></td>
+                <td>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%"></div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>🔧 Technical Specifications</h2>
+        <div class="chart">
+          <h3>System Architecture</h3>
+          <ul>
+            <li><strong>Runtime:</strong> Node.js 18.x on AWS Lambda</li>
+            <li><strong>PDF Engine:</strong> Puppeteer 21.5.2 with Chromium</li>
+            <li><strong>Storage:</strong> Amazon S3 with versioning</li>
+            <li><strong>API:</strong> RESTful API Gateway with CORS</li>
+            <li><strong>Memory:</strong> 1024 MB allocated</li>
+            <li><strong>Timeout:</strong> 30 seconds maximum</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>🚀 API Response Example</h2>
+        <div
+          style="
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+          "
+        >
+          <pre>
+{
+  "success": true,
+  "message": "PDF generated successfully",
+  "fileName": "complex-test.pdf",
+  "s3Url": "https://bucket.s3.region.amazonaws.com/complex-test.pdf",
+  "fileSize": 25631
+}</pre
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p><strong>Generated on:</strong> <span id="current-date"></span></p>
+      <p>Advanced PDF Generation Service - Powered by AWS Lambda & Puppeteer</p>
+      <p>✅ Test completed successfully!</p>
+    </div>
+
+    <script>
+      // Add current date
+      document.getElementById("current-date").textContent =
+        new Date().toLocaleString();
+
+      // Simulate some dynamic content
+      console.log("PDF Generation Test - Complex HTML Template");
+    </script>
+  </body>
+</html>

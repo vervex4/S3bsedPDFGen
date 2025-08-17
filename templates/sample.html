@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sample PDF Document</title>
+    <style>
+      @page {
+        margin: 2cm;
+        size: A4;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        border-bottom: 3px solid #2c3e50;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        color: #2c3e50;
+        margin: 0;
+        font-size: 2.5em;
+      }
+
+      .header p {
+        color: #7f8c8d;
+        margin: 10px 0 0 0;
+        font-size: 1.1em;
+      }
+
+      .content {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .section {
+        margin-bottom: 30px;
+      }
+
+      .section h2 {
+        color: #34495e;
+        border-left: 4px solid #3498db;
+        padding-left: 15px;
+        margin-bottom: 15px;
+      }
+
+      .highlight-box {
+        background-color: #ecf0f1;
+        border-left: 4px solid #e74c3c;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 5px;
+      }
+
+      .feature-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .feature-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #ecf0f1;
+      }
+
+      .feature-list li:before {
+        content: "✓";
+        color: #27ae60;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .footer {
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid #bdc3c7;
+        text-align: center;
+        color: #7f8c8d;
+        font-size: 0.9em;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      .table th,
+      .table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+      }
+
+      .table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+      }
+
+      .table tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>PDF Generation Service</h1>
+      <p>Professional HTML to PDF Conversion</p>
+    </div>
+
+    <div class="content">
+      <div class="section">
+        <h2>Overview</h2>
+        <p>
+          This document demonstrates the capabilities of our HTML to PDF
+          conversion service. The service uses advanced technologies to ensure
+          high-quality PDF output with proper formatting, styling, and layout
+          preservation.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Key Features</h2>
+        <ul class="feature-list">
+          <li>High-quality PDF generation from HTML content</li>
+          <li>CSS styling and layout preservation</li>
+          <li>Support for custom fonts and images</li>
+          <li>Configurable page formats (A4, Letter, Legal)</li>
+          <li>Customizable margins and page settings</li>
+          <li>Background color and image support</li>
+          <li>Secure S3 storage integration</li>
+          <li>RESTful API for easy integration</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Technical Specifications</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Technology</th>
+              <th>Version</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PDF Engine</td>
+              <td>Puppeteer</td>
+              <td>21.5.2</td>
+            </tr>
+            <tr>
+              <td>Browser</td>
+              <td>Chromium</td>
+              <td>119.0.2</td>
+            </tr>
+            <tr>
+              <td>Runtime</td>
+              <td>Node.js</td>
+              <td>18.x</td>
+            </tr>
+            <tr>
+              <td>Cloud Platform</td>
+              <td>AWS Lambda</td>
+              <td>Latest</td>
+            </tr>
+            <tr>
+              <td>Storage</td>
+              <td>Amazon S3</td>
+              <td>Latest</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="highlight-box">
+        <h3>Performance Benefits</h3>
+        <p>
+          Our service is designed for optimal performance with fast PDF
+          generation times, scalable infrastructure, and reliable delivery. The
+          serverless architecture ensures cost-effectiveness and automatic
+          scaling based on demand.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Usage Examples</h2>
+        <p>
+          The API accepts base64-encoded HTML content and returns a publicly
+          accessible S3 URL for the generated PDF. This makes it easy to
+          integrate with web applications, mobile apps, and other services.
+        </p>
+
+        <p><strong>API Endpoint:</strong> POST /generate-pdf</p>
+        <p><strong>Response Format:</strong> JSON with PDF URL and metadata</p>
+        <p>
+          <strong>Storage:</strong> Secure S3 bucket with public read access
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Generated on: <span id="generated-date"></span></p>
+      <p>PDF Generation Service - Powered by AWS Lambda & Puppeteer</p>
+    </div>
+
+    <script>
+      // Add current date
+      document.getElementById("generated-date").textContent =
+        new Date().toLocaleString();
+    </script>
+  </body>
+</html>
