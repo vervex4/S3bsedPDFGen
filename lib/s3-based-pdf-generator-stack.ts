@@ -69,18 +69,27 @@ export class S3BasedPdfGeneratorStack extends cdk.Stack {
         origin: new origins.S3Origin(pdfBucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-        responseHeadersPolicy: new cloudfront.ResponseHeadersPolicy(this, "CorsPolicy", {
-          responseHeadersPolicyName: "CORS-Policy",
-          corsBehavior: {
-            accessControlAllowCredentials: false,
-            accessControlAllowHeaders: ["*"],
-            accessControlAllowMethods: ["GET", "HEAD", "OPTIONS"],
-            accessControlAllowOrigins: ["*"],
-            accessControlExposeHeaders: ["ETag", "Content-Length", "Content-Type", "Content-Disposition"],
-            accessControlMaxAge: cdk.Duration.seconds(86400),
-            originOverride: true,
-          },
-        }),
+        responseHeadersPolicy: new cloudfront.ResponseHeadersPolicy(
+          this,
+          "CorsPolicy",
+          {
+            responseHeadersPolicyName: "CORS-Policy",
+            corsBehavior: {
+              accessControlAllowCredentials: false,
+              accessControlAllowHeaders: ["*"],
+              accessControlAllowMethods: ["GET", "HEAD", "OPTIONS"],
+              accessControlAllowOrigins: ["*"],
+              accessControlExposeHeaders: [
+                "ETag",
+                "Content-Length",
+                "Content-Type",
+                "Content-Disposition",
+              ],
+              accessControlMaxAge: cdk.Duration.seconds(86400),
+              originOverride: true,
+            },
+          }
+        ),
       },
       defaultRootObject: "index.html",
       errorResponses: [
@@ -112,8 +121,8 @@ export class S3BasedPdfGeneratorStack extends cdk.Stack {
         runtime: lambda.Runtime.NODEJS_18_X,
         handler: "dist/index.handler",
         code: lambda.Code.fromAsset("lambda"),
-        timeout: cdk.Duration.seconds(30),
-        memorySize: 1024,
+        timeout: cdk.Duration.seconds(300), // Increased to 5 minutes
+        memorySize: 3072, // Increased to 3GB for better performance
         environment: {
           BUCKET_NAME: pdfBucket.bucketName,
           CLOUDFRONT_URL: distribution.distributionDomainName,

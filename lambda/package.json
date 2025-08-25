@@ -2,7 +2,7 @@
   "name": "pdf-generator-lambda",
   "version": "1.0.0",
   "description": "Lambda function for PDF generation",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "prebuild": "rm -rf dist",
@@ -10,11 +10,12 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.400.0",
-    "puppeteer-core": "^21.5.2",
-    "@sparticuz/chromium": "^119.0.2"
+    "@sparticuz/chromium": "^119.0.2",
+    "puppeteer-core": "^21.5.2"
   },
   "devDependencies": {
-    "typescript": "^5.0.4",
-    "@types/node": "^18.15.11"
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.4"
   }
 }

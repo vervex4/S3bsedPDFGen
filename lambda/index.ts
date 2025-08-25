@@ -8,21 +8,6 @@ const s3Client = new S3Client({ region: process.env.AWS_REGION });
 const BUCKET_NAME = process.env.BUCKET_NAME!;
 const CLOUDFRONT_URL = process.env.CLOUDFRONT_URL;
 
-interface RequestBody {
-  htmlContent: string; // base64 encoded HTML
-  fileName?: string;
-  options?: {
-    format?: "A4" | "Letter" | "Legal";
-    margin?: {
-      top?: string;
-      right?: string;
-      bottom?: string;
-      left?: string;
-    };
-    printBackground?: boolean;
-  };
-}
-
 // CORS headers for all responses
 const corsHeaders = {
   "Content-Type": "application/json",
@@ -47,78 +32,163 @@ export const handler = async (
   }
 
   try {
-    console.log("Event received:", JSON.stringify(event, null, 2));
-
-    // Parse request body
-    const body: RequestBody = JSON.parse(event.body || "{}");
-
-    if (!body.htmlContent) {
+    if (!event.body) {
       return {
         statusCode: 400,
         headers: corsHeaders,
         body: JSON.stringify({
-          error: "htmlContent is required in base64 format",
+          error: "Missing request body",
+        }),
+      };
+    }
+
+    const body = JSON.parse(event.body);
+    const { htmlContent, fileName } = body;
+
+    if (!htmlContent) {
+      return {
+        statusCode: 400,
+        headers: corsHeaders,
+        body: JSON.stringify({
+          error: "Missing htmlContent in request body",
         }),
       };
     }
 
     // Decode base64 HTML content
-    const htmlContent = Buffer.from(body.htmlContent, "base64").toString(
-      "utf-8"
-    );
+    let html = Buffer.from(htmlContent, "base64").toString("utf-8");
+
+    // Inject Hindi font CSS to ensure proper rendering
+    const fontCSS = `
+      <style>
+        @font-face {
+          font-family: 'Noto Sans Devanagari';
+          src: url('https://numeriisoft.com/assets/NotoSansDevanagari-Bold.ttf') format('truetype');
+          font-weight: bold;
+          font-style: normal;
+          font-display: swap;
+        }
+        * {
+          font-family: 'Noto Sans Devanagari', 'Arial Unicode MS', Arial, sans-serif !important;
+        }
+        body {
+          font-family: 'Noto Sans Devanagari', 'Arial Unicode MS', Arial, sans-serif !important;
+        }
+      </style>
+    `;
+
+    // Insert font CSS in the head section
+    if (html.includes("<head>")) {
+      html = html.replace("<head>", `<head>${fontCSS}`);
+    } else if (html.includes("</head>")) {
+      html = html.replace("</head>", `${fontCSS}</head>`);
+    } else {
+      // If no head tag, add it at the beginning
+      html = `<head>${fontCSS}</head>${html}`;
+    }
 
     // Generate unique filename with UUID
     const uuid = randomUUID();
-    const fileName = body.fileName
-      ? body.fileName.replace(/\.pdf$/i, "") + "-" + uuid + ".pdf"
+    const finalFileName = fileName
+      ? fileName.replace(/\.pdf$/i, "") + "-" + uuid + ".pdf"
       : `${uuid}.pdf`;
 
-    // Launch browser
+    console.log("Starting PDF generation...");
+    const startTime = Date.now();
+
+    // Launch browser with optimized settings for performance and font support
     const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
+      args: [
+        ...chromium.args,
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--no-first-run",
+        "--no-zygote",
+        "--disable-background-timer-throttling",
+        "--disable-backgrounding-occluded-windows",
+        "--disable-renderer-backgrounding",
+        "--disable-features=TranslateUI",
+        "--disable-ipc-flooding-protection",
+        "--disable-extensions",
+        "--disable-plugins",
+        "--enable-fonts",
+        "--enable-images",
+        "--font-render-hinting=none",
+        "--disable-font-subpixel-positioning",
+        "--disable-web-security",
+        "--memory-pressure-off",
+        "--max_old_space_size=2048",
+        "--disable-features=VizDisplayCompositor",
+      ],
+      defaultViewport: {
+        width: 1200,
+        height: 800,
+      },
       executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
+      headless: chromium.headless === true,
     });
 
     try {
-      // Create new page
       const page = await browser.newPage();
 
-      // Set content and wait for it to load
-      await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+      // Set content with timeout and font support
+      await page.setContent(html, {
+        waitUntil: "networkidle0",
+        timeout: 60000,
+      });
 
-      // Configure PDF options
-      const pdfOptions = {
-        format: body.options?.format || "A4",
-        margin: body.options?.margin || {
-          top: "1cm",
-          right: "1cm",
-          bottom: "1cm",
-          left: "1cm",
+      // Wait for fonts to load, especially for Hindi text
+      await page.evaluate(() => {
+        return document.fonts.ready;
+      });
+
+      // Additional wait to ensure fonts are fully loaded
+      await page.waitForTimeout(2000);
+
+      console.log("Content loaded, generating PDF...");
+
+      // Generate PDF with optimized settings
+      const pdfBuffer = await page.pdf({
+        format: "a4",
+        printBackground: true,
+        margin: {
+          top: "0.5in",
+          right: "0.5in",
+          bottom: "0.5in",
+          left: "0.5in",
         },
-        printBackground: body.options?.printBackground !== false,
-      };
+        preferCSSPageSize: true,
+        displayHeaderFooter: false,
+        timeout: 120000,
+      });
 
-      // Generate PDF
-      const pdfBuffer = await page.pdf(pdfOptions);
+      console.log(
+        `PDF generated in ${Date.now() - startTime}ms, size: ${
+          pdfBuffer.length
+        } bytes`
+      );
 
       // Upload to S3
       const uploadCommand = new PutObjectCommand({
         Bucket: BUCKET_NAME,
-        Key: fileName,
+        Key: finalFileName,
         Body: pdfBuffer,
         ContentType: "application/pdf",
-        ContentDisposition: `attachment; filename="${fileName}"`,
+        ContentDisposition: `inline; filename="${finalFileName}"`,
+        CacheControl: "public, max-age=3600",
       });
 
       await s3Client.send(uploadCommand);
+      console.log("PDF uploaded to S3 successfully");
 
-      // Generate URLs
-      const s3Url = `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+      const s3Url = `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${finalFileName}`;
       const cloudfrontUrl = CLOUDFRONT_URL
-        ? `https://${CLOUDFRONT_URL}/${fileName}`
+        ? `https://${CLOUDFRONT_URL}/${finalFileName}`
         : null;
+
+      const totalTime = Date.now() - startTime;
+      console.log(`Total processing time: ${totalTime}ms`);
 
       return {
         statusCode: 200,
@@ -126,12 +196,13 @@ export const handler = async (
         body: JSON.stringify({
           success: true,
           message: "PDF generated successfully",
-          fileName: fileName,
+          fileName: finalFileName,
           uuid: uuid,
           s3Url: s3Url,
           cloudfrontUrl: cloudfrontUrl,
           fileSize: pdfBuffer.length,
-          downloadUrl: cloudfrontUrl || s3Url, // Prefer CloudFront if available
+          downloadUrl: cloudfrontUrl || s3Url,
+          processingTimeMs: totalTime,
         }),
       };
     } finally {
@@ -139,7 +210,6 @@ export const handler = async (
     }
   } catch (error) {
     console.error("Error generating PDF:", error);
-
     return {
       statusCode: 500,
       headers: corsHeaders,
